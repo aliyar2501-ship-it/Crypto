@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Вход в систему{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-4">
+        <div class="card shadow border-0 rounded-3">
+            <div class="card-body p-4">
+                <h4 class="card-title text-center mb-4 fw-bold">Авторизация</h4>
+                <form method="post">
+                    {% csrf_token %}
+                    {% if form.errors %}
+                        <div class="alert alert-danger p-2" style="font-size: 0.85rem;">Неверное имя или пароль</div>
+                    {% endif %}
+                    <div class="mb-3">
+                        <label class="form-label text-muted" style="font-size: 0.9rem;">Имя пользователя</label>
+                        <input type="text" name="username" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-muted" style="font-size: 0.9rem;">Пароль</label>
+                        <input type="password" name="password" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-dark w-100 fw-bold mt-2">Войти</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

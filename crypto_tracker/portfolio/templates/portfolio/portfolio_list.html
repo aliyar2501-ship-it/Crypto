@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-6">
+        <h2 class="fw-bold"><i class="fa-solid fa-wallet text-warning me-2"></i>Мой Портфель</h2>
+    </div>
+    <div class="col-md-6 text-end">
+        <a href="{% url 'portfolio:create' %}" class="btn btn-dark fw-bold shadow-sm">
+            <i class="fa-solid fa-plus me-1"></i> Добавить сделку
+        </a>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm rounded-3 p-3 bg-white">
+            <div class="text-muted small text-uppercase fw-bold">Инвестировано</div>
+            <div class="h3 fw-bold text-dark mt-1">${{ total_invested|floatformat:2 }}</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm rounded-3 p-3 bg-white">
+            <div class="text-muted small text-uppercase fw-bold">Текущая стоимость</div>
+            <div class="h3 fw-bold text-dark mt-1">${{ total_current_value|floatformat:2 }}</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm rounded-3 p-3 {% if total_pnl_usd >= 0 %}bg-success-subtle text-success{% else %}bg-danger-subtle text-danger{% endif %}">
+            <div class="text-uppercase small fw-bold">Общий баланс прибыли/убытков (PnL)</div>
+            <div class="h3 fw-bold mt-1">
+                ${{ total_pnl_usd|floatformat:2 }} ({{ total_pnl_percent|floatformat:2 }}%)
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-success shadow-sm rounded-3">{{ message }}</div>
+    {% endfor %}
+{% endif %}
+
+<div class="card shadow border-0 rounded-3 overflow-hidden">
+    <table class="table table-hover align-middle mb-0">
+        <thead class="table-dark">
+            <tr>
+                <th class="ps-4">Монета</th>
+                <th>Количество</th>
+                <th>Цена покупки</th>
+                <th>Текущая цена</th>
+                <th>Стоимость</th>
+                <th>PnL</th>
+                <th class="pe-4 text-end">Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for asset in page_obj %}
+            <tr>
+                <td class="ps-4">
+                    <a href="{% url 'portfolio:detail' asset.pk %}" class="fw-bold text-decoration-none text-dark">
+                        <span class="badge bg-warning text-dark text-uppercase me-2">{{ asset.symbol }}</span>{{ asset.name }}
+                    </a>
+                </td>
+                <td class="fw-semibold">{{ asset.amount }}</td>
+                <td class="text-muted">${{ asset.buy_price }}</td>
+                <td class="text-muted">${{ asset.current_price|floatformat:2 }}</td>
+                <td class="fw-bold">${{ asset.current_value|floatformat:2 }}</td>
+                <td>
+                    {% if asset.pnl_usd >= 0 %}
+                        <span class="text-success fw-bold">+${{ asset.pnl_usd|floatformat:2 }} (+{{ asset.pnl_percent|floatformat:2 }}%)</span>
+                    {% else %}
+                        <span class="text-danger fw-bold">${{ asset.pnl_usd|floatformat:2 }} ({{ asset.pnl_percent|floatformat:2 }}%)</span>
+                    {% endif %}
+                </td>
+                <td class="pe-4 text-end">
+                    <a href="{% url 'portfolio:update' asset.pk %}" class="btn btn-sm btn-outline-secondary me-1"><i class="fa-solid fa-pen"></i></a>
+                    <a href="{% url 'portfolio:delete' asset.pk %}" class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-trash"></i></a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" class="text-center py-4 text-muted">Ваш портфель пока пуст. Добавьте свою первую крипто-сделку!</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% if page_obj.has_other_pages %}
+<div class="d-flex justify-content-center mt-4">
+    <nav>
+        <ul class="pagination shadow-sm">
+            {% if page_obj.has_previous %}
+                <li class="page-item"><a class="page-link text-dark" href="?page={{ page_obj.previous_page_number }}">&laquo; Назад</a></li>
+            {% endif %}
+            <li class="page-item active"><span class="page-link bg-dark border-dark">Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span></li>
+            {% if page_obj.has_next %}
+                <li class="page-item"><a class="page-link text-dark" href="?page={{ page_obj.next_page_number }}">Вперед &raquo;</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+{% endif %}
+{% endblock %}

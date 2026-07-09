@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5">
+        <div class="card shadow border-0 rounded-3 text-center">
+            <div class="card-body p-4">
+                <i class="fa-solid fa-triangle-exclamation text-danger fa-3x mb-3"></i>
+                <h4 class="fw-bold text-dark">Удалить {{ asset.name }}?</h4>
+                <p class="text-muted">Вы уверены, что хотите безвозвратно удалить информацию о покупке {{ asset.amount }} {{ asset.symbol }} из вашего портфеля?</p>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-flex justify-content-center gap-2 mt-4">
+                        <a href="{% url 'portfolio:list' %}" class="btn btn-light border">Отмена</a>
+                        <button type="submit" class="btn btn-danger fw-bold">Да, удалить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
