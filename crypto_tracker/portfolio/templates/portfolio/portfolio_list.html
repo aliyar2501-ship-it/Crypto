@@ -5,6 +5,19 @@
     <div class="col-md-6">
         <h2 class="fw-bold"><i class="fa-solid fa-wallet text-warning me-2"></i>Мой Портфель</h2>
     </div>
+    <div class="card border-0 shadow-sm rounded-3 p-3 mb-4 bg-dark text-white">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div>
+            <h6 class="mb-1 text-warning fw-bold"><i class="fa-brands fa-telegram me-2"></i>Связь с Telegram-ботом</h6>
+            <p class="mb-0 text-light small">Отправьте боту команду: <code>/link {{ request.user.profile.secret_key }}</code></p>
+        </div>
+        <div>
+            <span class="badge {% if request.user.profile.telegram_id %}bg-success{% else %}bg-secondary{% endif %}">
+                {% if request.user.profile.telegram_id %}Бот подключен (ID: {{ request.user.profile.telegram_id }}){% else %}Бот не подключен{% endif %}
+            </span>
+        </div>
+    </div>
+</div>
     <div class="col-md-6 text-end">
         <a href="{% url 'portfolio:create' %}" class="btn btn-dark fw-bold shadow-sm">
             <i class="fa-solid fa-plus me-1"></i> Добавить сделку
