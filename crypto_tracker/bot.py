@@ -69,14 +69,20 @@ async def cmd_portfolio(message: Message):
     """Запрос баланса и аналитики портфеля."""
     telegram_id = message.from_user.id
 
-    # Отправляем GET запрос к нашему Django API на Render
-    async with aiohttp.ClientSession() as session:
+    # Увеличиваем таймаут ожидания до 15 секунд, так как Render может долго просыпаться
+    timeout = aiohttp.ClientTimeout(total=15)
+
+    async with aiohttp.ClientSession(timeout=timeout) as session:
         try:
-            async with session.get(f"{BACKEND_URL}/portfolio/", params={"telegram_id": telegram_id}) as response:
+            url = f"{BACKEND_URL}/portfolio/"
+            print(f"[BOT] Отправляю запрос на {url} c telegram_id={telegram_id}...")  # Лог в консоль
+
+            async with session.get(url, params={"telegram_id": telegram_id}) as response:
+                print(f"[BOT] Ответ от сервера: {response.status}")  # Лог в консоль
+
                 if response.status == 200:
                     data = await response.json()
 
-                    # Формируем красивый отчет
                     text = f"📊 {html.bold('Портфель пользователя:')} {data['username']}\n"
                     text += "─" * 20 + "\n"
                     text += f"💵 Инвестировано: {html.bold(f'${data['total_invested']}')}\n"
@@ -88,7 +94,6 @@ async def cmd_portfolio(message: Message):
                     text += f"{pnl_emoji} Общий PnL: {html.bold(f'{pnl_sign}${pnl}')}\n"
                     text += "─" * 20 + "\n\n"
 
-                    # Выводим монеты списком
                     if data['assets']:
                         text += f"{html.bold('Активы в портфеле:')}\n"
                         for asset in data['assets']:
@@ -108,9 +113,13 @@ async def cmd_portfolio(message: Message):
                         "❌ Ваш Telegram ID не привязан к аккаунту на сайте. Сначала введите команду `/link СЕКРЕТНЫЙ_КЛЮЧ`",
                         parse_mode="Markdown")
                 else:
-                    await message.answer("⚠ Не удалось получить данные портфеля.")
+                    raw_err = await response.text()
+                    print(f"[BOT] Неожиданный ответ сервера: {raw_err}")  # Лог ошибки в консоль
+                    await message.answer("⚠ Не удалось получить данные портфеля (ошибка на стороне сайта).")
+
         except Exception as e:
-            await message.answer("⚠ Ошибка подключения к серверу сайта.")
+            print(f"[BOT] Ошибка подключения к бэкенду: {e}")  # Лог ошибки в консоль
+            await message.answer("⚠ Ошибка подключения к серверу сайта. Попробуйте еще раз через пару секунд.")
 
 
 async def main():
