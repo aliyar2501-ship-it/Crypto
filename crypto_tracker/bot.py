@@ -1,16 +1,24 @@
 import logging
 import asyncio
+import os
 import aiohttp
 from aiogram import Bot, Dispatcher, html
 from aiogram.filters import Command, CommandObject
 from aiogram.types import Message
+from dotenv import load_dotenv  # <-- Добавили импорт
+
+# Загружаем переменные окружения из файла .env
+load_dotenv()
 
 # Настройка логирования
 logging.basicConfig(level=logging.INFO)
 
-# ТОКЕН И URL БЭКЕНДА (Замените на свои данные)
-BOT_TOKEN = "8709754600:AAHpLvgF7RqCk7GCHyFCVCifpPpw307REjw"
+# Получаем токен из переменной окружения
+BOT_TOKEN = os.getenv("BOT_TOKEN")
 BACKEND_URL = "https://crypto-tracker-rbig.onrender.com/api"
+
+if not BOT_TOKEN:
+    raise ValueError("ОШИБКА: BOT_TOKEN не найден в переменных окружения!")
 
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
