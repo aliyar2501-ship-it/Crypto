@@ -15,7 +15,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', DEV_SECRET_KEY)
 DEBUG = os.environ.get('DEBUG', '0') == '1'   # локально задайте DEBUG=1 в .env
 
 if not DEBUG and SECRET_KEY == DEV_SECRET_KEY:
-    raise ImproperlyConfigured('Задайте SECRET_KEY в переменных окружения')
+    raise ImproperlyConfigured('4cZBS_duf0kQ_xW7NyZftjYec5OOArnjD-EJoebTCUHYmVgG4lYHX91HkC32Urdhn9M')
 
 ALLOWED_HOSTS = [
     h.strip() for h in
