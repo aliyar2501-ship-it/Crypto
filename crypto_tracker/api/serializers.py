@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from portfolio.models import Asset, UserProfile
 
+#api serializers.py
 
 class AssetSerializer(serializers.ModelSerializer):
     """Превращает данные о монете в JSON."""

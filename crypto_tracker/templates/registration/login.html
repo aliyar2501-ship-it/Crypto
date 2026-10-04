@@ -10,19 +10,25 @@
                 <h4 class="card-title text-center mb-4 fw-bold">Авторизация</h4>
                 <form method="post">
                     {% csrf_token %}
+                    <input type="hidden" name="next" value="{{ next }}">
                     {% if form.errors %}
-                        <div class="alert alert-danger p-2" style="font-size: 0.85rem;">Неверное имя или пароль</div>
+                        <div class="alert alert-danger p-2 small">Неверное имя или пароль</div>
                     {% endif %}
                     <div class="mb-3">
-                        <label class="form-label text-muted" style="font-size: 0.9rem;">Имя пользователя</label>
-                        <input type="text" name="username" class="form-control" required>
+                        <label for="id_username" class="form-label text-muted small">Имя пользователя</label>
+                        <input type="text" name="username" id="id_username" class="form-control"
+                               autocomplete="username" autofocus required>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label text-muted" style="font-size: 0.9rem;">Пароль</label>
-                        <input type="password" name="password" class="form-control" required>
+                        <label for="id_password" class="form-label text-muted small">Пароль</label>
+                        <input type="password" name="password" id="id_password" class="form-control"
+                               autocomplete="current-password" required>
                     </div>
-                    <button type="submit" class="btn btn-dark w-100 fw-bold mt-2">Войти</button>
+                    <button type="submit" class="btn btn-warning w-100 fw-bold mt-2">Войти</button>
                 </form>
+                <p class="text-center text-muted small mt-3 mb-0">
+                    Нет аккаунта? <a href="{% url 'register' %}">Зарегистрироваться</a>
+                </p>
             </div>
         </div>
     </div>

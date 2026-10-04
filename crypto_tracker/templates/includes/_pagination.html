@@ -1,0 +1,21 @@
+{% if page_obj.has_other_pages %}
+<div class="d-flex justify-content-center mt-4">
+    <nav aria-label="Страницы">
+        <ul class="pagination shadow-sm">
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link text-dark" href="?page={{ page_obj.previous_page_number }}{{ extra_query }}">&laquo; Назад</a>
+                </li>
+            {% endif %}
+            <li class="page-item active">
+                <span class="page-link bg-dark border-dark text-white">Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+            </li>
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link text-dark" href="?page={{ page_obj.next_page_number }}{{ extra_query }}">Вперёд &raquo;</a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+{% endif %}

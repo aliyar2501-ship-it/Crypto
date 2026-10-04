@@ -16,3 +16,8 @@ __pycache__/
 
 # Секретные данные (если будешь использовать .env файлы)
 .env
+
+staticfiles/
+*.sqlite3
+.env.*
+!.env.example

@@ -6,3 +6,5 @@ app_name = 'market'
 urlpatterns = [
     path('', market_view, name='index'),
 ]
+
+#market urls.py

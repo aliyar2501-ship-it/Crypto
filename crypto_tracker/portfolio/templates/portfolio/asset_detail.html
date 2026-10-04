@@ -1,4 +1,7 @@
 {% extends 'base.html' %}
+{% load formatting %}
+
+{% block title %}{{ asset.name }}{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center mt-4">
@@ -9,14 +12,30 @@
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item d-flex justify-content-between"><span>Название:</span> <strong>{{ asset.name }}</strong></li>
                     <li class="list-group-item d-flex justify-content-between"><span>Тикер:</span> <strong class="text-uppercase">{{ asset.symbol }}</strong></li>
-                    <li class="list-group-item d-flex justify-content-between"><span>Количество монет:</span> <strong>{{ asset.amount }}</strong></li>
-                    <li class="list-group-item d-flex justify-content-between"><span>Цена вашей покупки:</span> <strong>${{ asset.buy_price }}</strong></li>
-                    <li class="list-group-item d-flex justify-content-between"><span>Дата занесения транзакции:</span> <strong>{{ asset.created_at|date:"d.m.Y H:i" }}</strong></li>
-                    <li class="list-group-item d-flex justify-content-between"><span>Секретный токен связи (ID):</span> <code class="text-muted">{{ asset.id }}</code></li>
+                    <li class="list-group-item d-flex justify-content-between"><span>Количество монет:</span> <strong>{{ asset.amount|trim_zeros }}</strong></li>
+                    <li class="list-group-item d-flex justify-content-between"><span>Цена покупки:</span> <strong>{{ asset.buy_price|usd }}</strong></li>
+                    <li class="list-group-item d-flex justify-content-between"><span>Сумма вложений:</span> <strong>{{ asset.total_buy_cost|usd }}</strong></li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Текущая цена:</span>
+                        <strong>
+                            {{ asset.current_price|usd }}
+                            {% if not asset.price_known %}<i class="fa-solid fa-circle-exclamation text-warning" title="Цена недоступна"></i>{% endif %}
+                        </strong>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between"><span>Текущая стоимость:</span> <strong>{{ asset.current_value|usd }}</strong></li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>PnL:</span>
+                        <strong class="{% if asset.pnl_usd >= 0 %}text-success{% else %}text-danger{% endif %}">
+                            {{ asset.pnl_usd|signed_usd }} ({{ asset.pnl_percent|pct }})
+                        </strong>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between"><span>Дата добавления:</span> <strong>{{ asset.created_at|date:"d.m.Y H:i" }}</strong></li>
                 </ul>
-                <div class="text-center mt-4">
-                    <a href="{% url 'portfolio:list' %}" class="btn btn-dark fw-bold w-100">Вернуться в портфель</a>
+                <div class="d-flex gap-2 mt-4">
+                    <a href="{% url 'portfolio:update' asset.pk %}" class="btn btn-warning fw-bold flex-fill">Изменить</a>
+                    <a href="{% url 'portfolio:delete' asset.pk %}" class="btn btn-outline-danger flex-fill">Удалить</a>
                 </div>
+                <a href="{% url 'portfolio:list' %}" class="btn btn-outline-dark w-100 mt-2">Вернуться в портфель</a>
             </div>
         </div>
     </div>
